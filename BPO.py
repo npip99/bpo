@@ -260,17 +260,29 @@ while True:
 					
 				while "@" not in bpoSeats[vid][i][3]:
 					bpoSeats[vid][i][3] = input("What is the email of " + bpoSeats[vid][i][0] + " " + bpoSeats[vid][i][1] + " (" + bpoSeats[vid][i][2] + ")?\n")
+					if bpoSeats[vid][i][3] is "skip":
+                                                break
 					'''if "@" in bpoSeats[vid][i][-1]:
 					con.query("UPDATE NEW_Player SET email='" + bpoSeats[vid][i][-1] + "' WHERE pid='" + bpoSeats[vid][i][3] + "'")
 					con.commit()
 					if con.sqlstate() != "00000":
 						print("Error inputting email into NPPT Database " + con.sqlstate())
 					'''
+				if bpoSeats[vid][i][3] is "skip":
+                                        continue
 				# Find player in BPO site
 				chrome.get(url + '/search/' + str(i+1))
 				elem = chrome.find_element_by_xpath("//input[@type='search']")
 				elem.send_keys(bpoSeats[vid][i][3])
-				time.sleep(3)
+				while True:
+                                        elem = chrome.find_element_by_xpath("//div[@id='event-results-users-table_processing']")
+                                        display = chrome.execute_script("return arguments[0].style.display", elem)
+                                        print(display)
+                                        if display != "none":
+                                                time.sleep(0.25)
+                                        else:
+                                                break
+				time.sleep(0.25)
 				elem = chrome.find_elements_by_xpath("//button[@disabled='disabled']")
 				if len(elem) == 1:
 					print("Winner #" + str(i+1) + " is already entered")
