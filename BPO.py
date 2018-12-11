@@ -279,9 +279,9 @@ while True:
 
 				if len(elem) == 1:
 					# Add player if found and email is valid
-					#cont = input("Enter Winner #" + str(i+1) + "? (y/n)")
+					# cont = input("Enter Winner #" + str(i+1) + "? (y/n)")
 					
-					#if "y" in cont:
+					# if "y" in cont:
 					chrome.execute_script("arguments[0].click()", elem[0])
 				else:
 					# Create player if not found
@@ -296,7 +296,7 @@ while True:
 					chrome.execute_script("arguments[0].setAttribute('value','" + bpoSeats[vid][i][3] + "')", elem)
 					elem = chrome.find_element_by_xpath("//input[@type='submit']")
 					
-					cont = input("Enter Winner #" + str(i+1) + " (" + bpoSeats[vid][i][2] + ")? (y/n) ")
+					cont = input("Create Winner #" + str(i+1) + " (" + bpoSeats[vid][i][2] + ")? (y/n) ")
 					if "y" in cont:
 						chrome.execute_script("arguments[0].click()", elem)
 	except:
