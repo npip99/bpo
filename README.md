@@ -1,6 +1,6 @@
-# bpo_submitter
+# BPO Submitter
 Submits BPO tokens
 
 # Executing the script
-Run with `python3 BPO.py
+Run with `python3 BPO.py`
 
