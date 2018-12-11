@@ -270,7 +270,7 @@ while True:
 				chrome.get(url + '/search/' + str(i+1))
 				elem = chrome.find_element_by_xpath("//input[@type='search']")
 				elem.send_keys(bpoSeats[vid][i][3])
-				time.sleep(2)
+				time.sleep(3)
 				elem = chrome.find_elements_by_xpath("//button[@disabled='disabled']")
 				if len(elem) == 1:
 					print("Winner #" + str(i+1) + " is already entered")
