@@ -41,7 +41,7 @@ while True:
 	chromeOptions = webdriver.ChromeOptions()
 	prefs = {"profile.managed_default_content_settings.images":2}
 	chromeOptions.add_experimental_option("prefs", prefs)
-	chrome = webdriver.Chrome(chrome_options=chromeOptions)
+	chrome = webdriver.Chrome('./chromedriver.exe', chrome_options=chromeOptions)
 	#if len(date) != 10 or date[4] != '-' or date[7] != '-' or not date[:3].isdigit() or not date[5:6].isdigit() or not date[-1:].isdigit():
 	#	print("Date input incorrectly")
 	#	exit()
