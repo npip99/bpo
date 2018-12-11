@@ -182,6 +182,19 @@ while True:
 		chrome.execute_script("arguments[0].setAttribute('value','" + credentials[1] + "')", password)
 		chrome.execute_script("arguments[0].click()", chrome.find_element_by_xpath("//button[@type='submit']"))
 
+		# Wait for Processing
+		def waitProcessing():
+                        time.sleep(1)
+                        while True:
+                                elem = chrome.find_element_by_xpath("//div[@id='event-results-users-table_processing']")
+                                display = chrome.execute_script("return arguments[0].style.display", elem)
+                                if display != "none":
+                                        time.sleep(0.25)
+                                else:
+                                        break
+                        time.sleep(0.25)
+		
+
 		# Get venue names
 		chrome.get("https://barpokeropen.com/admin/events/create")
 		dropdown = chrome.find_element_by_xpath("//optgroup[@label='Region: Primary']")
@@ -214,7 +227,7 @@ while True:
 				elem = chrome.find_element_by_xpath("//input[@type='search']")
 				curDateStr = str(curDate.month).zfill(2) + "/" + str(curDate.day).zfill(2) + "/" + str(curDate.year)[-2:].zfill(2)
 				elem.send_keys(curDateStr)
-				time.sleep(2)
+				waitProcessing()
 				elem = chrome.find_elements_by_xpath("//td[text()=\"" + best + "\"]/../td[7]/a[2]")
 						
 				if len(elem) == 0:
@@ -231,7 +244,7 @@ while True:
 			chrome.get("https://barpokeropen.com/admin/events")
 			elem = chrome.find_element_by_xpath("//input[@type='search']")
 			elem.send_keys(bpodate[:6] + bpodate[-2:])
-			time.sleep(2)
+			waitProcessing()
 			elem = chrome.find_elements_by_xpath("//td[text()=\"" + best + "\"]/../td[7]/a[2]")
 			if len(elem) == 0:
 				raise Exception("BPO Event not created")
@@ -274,16 +287,7 @@ while True:
 				chrome.get(url + '/search/' + str(i+1))
 				elem = chrome.find_element_by_xpath("//input[@type='search']")
 				elem.send_keys(bpoSeats[vid][i][3])
-				time.sleep(1)
-				while True:
-                                        elem = chrome.find_element_by_xpath("//div[@id='event-results-users-table_processing']")
-                                        display = chrome.execute_script("return arguments[0].style.display", elem)
-                                        print(display)
-                                        if display != "none":
-                                                time.sleep(0.25)
-                                        else:
-                                                break
-				time.sleep(0.25)
+				waitProcessing()
 				elem = chrome.find_elements_by_xpath("//button[@disabled='disabled']")
 				if len(elem) == 1:
 					print("Winner #" + str(i+1) + " is already entered")
