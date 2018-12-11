@@ -1,3 +1,3 @@
 #!/bin/sh
-python3 bpo.py
+python3 ./BPO.py
 
