@@ -274,6 +274,7 @@ while True:
 				chrome.get(url + '/search/' + str(i+1))
 				elem = chrome.find_element_by_xpath("//input[@type='search']")
 				elem.send_keys(bpoSeats[vid][i][3])
+				time.sleep(1)
 				while True:
                                         elem = chrome.find_element_by_xpath("//div[@id='event-results-users-table_processing']")
                                         display = chrome.execute_script("return arguments[0].style.display", elem)
