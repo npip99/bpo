@@ -6,6 +6,8 @@ import time
 import difflib
 import sys
 import datetime
+import traceback
+import requests
 
 # TODO: Check if date is on the correct day of week for a venue
 
@@ -13,6 +15,8 @@ import datetime
 
 MySQLInfo = open("MySQL.txt","r").read().split("\n")
 credentials = open("BPO_Credentials.txt").read().split("\n")
+api_creds = open("API_Credentials.txt").read().split("\n")
+api_auth = (api_creds[0], api_creds[1])
 
 # Open MySQL
 con = _mysql.connect(MySQLInfo[0], MySQLInfo[1], MySQLInfo[2], MySQLInfo[3])
@@ -125,7 +129,7 @@ while True:
 					# Add the player
 					players.append(top)
 			
-			# Where there enough players?
+			# Were there enough players?
 			if len(players) < 3:
 				print("Error: " + venueLink + " had an invalid game")
 				continue
@@ -148,17 +152,22 @@ while True:
 
 			# For all BPO Seat winners
 			for i in range(0,len(pids) - 1):
-				con.query('SELECT * FROM NEW_Player WHERE pid=' + pids[i] + ';')
-				res = con.store_result()
-				player = res.fetch_row()[0]
+				# Get player info from pid
+				r = requests.get('https://npptpoker.com/TESTAPI/bpo.php?pid=' + pids[i], auth=api_auth)
+				player_json = r.text
+				player = eval(player_json)
+				player['email'] = player['email'].lower()
 				
 				# Store First, Last, Phone, and E-Mail
-				bpoSeats[vid][i] = [player[1].decode('utf-8')] + [player[2].decode('utf-8')] + [player[7].decode('utf-8')] + [player[8].decode('utf-8').lower()]
+				bpoSeats[vid][i] = [player[c] for c in ["fname", "lname", "phone", "email"]]
 
 				# Get venue name from vid
-				con.query('SELECT * FROM NEW_Venues WHERE vid=' + vid)
-				res = con.store_result()
-				venueNames[vid] = res.fetch_row()[0][1].decode('utf-8')
+				r = requests.get('https://npptpoker.com/TESTAPI/bpo.php?vid=' + vid, auth=api_auth)
+				venue_json = r.text
+				venue = eval(venue_json)
+				
+				# Store venue name
+				venueNames[vid] = venue['name']
 
 		# Print out results for confirmation
 		print("\nRESULTS FOR " + date + ":\n")
@@ -197,7 +206,12 @@ while True:
 
 		# Get venue names
 		chrome.get("https://barpokeropen.com/admin/events/create")
-		dropdown = chrome.find_element_by_xpath("//optgroup[@label='Region: Primary']")
+		try:
+			dropdown = chrome.find_element_by_xpath("//optgroup[@label='Region: Primary']")
+		except Exception as e:
+			traceback.print_exc()
+			print("Hm, looks like the BPO login might be wrong. Try checking BPO_Credentials.txt", file=sys.stderr)
+			exit()
 		names = []
 		for options in dropdown.find_elements_by_xpath(".//*"):
 			names.append(options.text)
