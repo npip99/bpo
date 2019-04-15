@@ -13,13 +13,9 @@ import requests
 
 # Extract SQL Username/Password
 
-MySQLInfo = open("MySQL.txt","r").read().split("\n")
-credentials = open("BPO_Credentials.txt").read().split("\n")
+bpo_creds = open("BPO_Credentials.txt").read().split("\n")
 api_creds = open("API_Credentials.txt").read().split("\n")
 api_auth = (api_creds[0], api_creds[1])
-
-# Open MySQL
-con = _mysql.connect(MySQLInfo[0], MySQLInfo[1], MySQLInfo[2], MySQLInfo[3])
    
 extend = input("Do you want to extend the games? (y/n) ")
 eDate = None
@@ -186,9 +182,9 @@ while True:
 		# Log into BPO
 		chrome.get("https://barpokeropen.com/auth/login")
 		email = chrome.find_element_by_xpath("//input[@type='email']")
-		chrome.execute_script("arguments[0].setAttribute('value','" + credentials[0] + "')", email)
+		chrome.execute_script("arguments[0].setAttribute('value','" + bpo_creds[0] + "')", email)
 		password = chrome.find_element_by_xpath("//input[@type='password']")
-		chrome.execute_script("arguments[0].setAttribute('value','" + credentials[1] + "')", password)
+		chrome.execute_script("arguments[0].setAttribute('value','" + bpo_creds[1] + "')", password)
 		chrome.execute_script("arguments[0].click()", chrome.find_element_by_xpath("//button[@type='submit']"))
 
 		# Wait for Processing
