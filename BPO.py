@@ -163,7 +163,7 @@ while True:
 				venue = eval(venue_json)
 				
 				# Store venue name
-				venueNames[vid] = venue['name']
+				venueNames[vid] = venue['Name']
 
 		# Print out results for confirmation
 		print("\nRESULTS FOR " + date + ":\n")
