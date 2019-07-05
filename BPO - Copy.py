@@ -82,13 +82,13 @@ while True:
 			if len(elems) == 0:
 				continue
 
-			# Add G1 Winner, or top points if G1 never happened
+			# Add G1 Winner
 			players.append( elems[0].get_attribute('href') )
 
 			# Find and add G2 Winner
 			elems = chrome.find_elements_by_xpath("//div[@class='leaderboard']/h2[3]/following-sibling::ul[1]/li[3]/a")
 
-			# If nonexistent, the bar did not have a game that night
+			# If nonexistent, the bar did not have a second game that night
 			if len(elems) == 0:
 				continue
 
@@ -111,7 +111,7 @@ while True:
 			
 			# Find top three points winners
 			pts = []
-			for i in range(1,5):
+			for i in range(1,4):
 				elems = chrome.find_elements_by_xpath("//div[@class='leaderboard']/h2[text()='Nightly Points Leader']/following-sibling::ul[" + str(i) + "]/li[3]/a")
 				if len(elems) > 0:
 					pts.append( elems[0].get_attribute('href') )
@@ -127,7 +127,7 @@ while True:
 			
 			# Were there enough players?
 			if len(players) < 3:
-				print("Error: " + venueLink + " had an invalid game, not enough players")
+				print("Error: " + venueLink + " had an invalid game")
 				continue
 
 			# Extract pid
@@ -135,13 +135,9 @@ while True:
 				players[i] = players[i].split('=')[-1]
 
 			# Get number of players
-			try:
-				num1 = int(chrome.find_element_by_xpath("//div[@class='leaderboard']/h2[2]").text.split(" - ")[1].split(" ")[0])
-				players.append(str(max(num1,0)))
-			except:
-				print("Warning: " + venueLink + " did not have a 1st game")
-				players.append(str(10))
-				
+			num1 = int(chrome.find_element_by_xpath("//div[@class='leaderboard']/h2[2]").text.split(" - ")[1].split(" ")[0])
+			players.append(str(max(num1,0)))
+
 			# Extract vid and use as dictionary key
 			bpoSeats[venueLink.split('vid=')[-1].split('&')[0]] = players
 
